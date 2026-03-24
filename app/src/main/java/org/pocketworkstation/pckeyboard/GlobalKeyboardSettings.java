@@ -37,6 +37,10 @@ public final class GlobalKeyboardSettings {
     public int popupKeyboardFlags = 0x1;
     public float topRowScale = 1.0f;
     //
+    // Read by KeyboardSwitcher for extra bottom padding
+    public int bottomMarginPortraitDp = 0;
+    public int bottomMarginLandscapeDp = 0;
+    //
     // Read by LatinKeyboardView
     public boolean showTouchPos = false;
     //
@@ -155,6 +159,19 @@ public final class GlobalKeyboardSettings {
             public void set(String val) { try { topRowScale = Float.valueOf(val); } catch (NumberFormatException e) { topRowScale = 1.0f; } }
             public String getDefault() { return "1.0"; }
             public int getFlags() { return FLAG_PREF_RESET_KEYBOARDS; }
+        });
+
+        // Bottom margin preference
+        addStringPref("pref_bottom_margin_dp_portrait", new StringPref() {
+          public void set(String val) { try { bottomMarginPortraitDp = Integer.valueOf(val); } catch (NumberFormatException e) { bottomMarginPortraitDp = 0; } }
+          public String getDefault() { return "0"; }
+          public int getFlags() { return FLAG_PREF_RECREATE_INPUT_VIEW; }
+        });
+
+        addStringPref("pref_bottom_margin_dp_landscape", new StringPref() {
+          public void set(String val) { try { bottomMarginLandscapeDp = Integer.valueOf(val); } catch (NumberFormatException e) { bottomMarginLandscapeDp = 0; } }
+          public String getDefault() { return "0"; }
+          public int getFlags() { return FLAG_PREF_RECREATE_INPUT_VIEW; }
         });
 
         addStringPref("pref_ctrl_a_override", new StringPref() {

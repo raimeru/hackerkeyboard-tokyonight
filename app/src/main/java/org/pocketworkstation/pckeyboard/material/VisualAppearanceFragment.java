@@ -69,6 +69,12 @@ public class VisualAppearanceFragment extends Fragment {
     private TextView candidateScaleValue;
     private Slider topRowScaleSlider;
     private TextView topRowScaleValue;
+    
+    // Bottom margin slider
+    private Slider bottomMarginSlider;
+    private TextView bottomMarginValue;
+    private Slider bottomMarginLandscapeSlider;
+    private TextView bottomMarginLandscapeValue;
 
     // Keyboard Mode Toggle Groups
     private MaterialButtonToggleGroup keyboardModePortraitGroup;
@@ -131,6 +137,10 @@ public class VisualAppearanceFragment extends Fragment {
             candidateScaleValue = view.findViewById(R.id.candidate_scale_value);
             topRowScaleSlider = view.findViewById(R.id.top_row_scale_slider);
             topRowScaleValue = view.findViewById(R.id.top_row_scale_value);
+            bottomMarginSlider = view.findViewById(R.id.bottom_margin_slider);
+            bottomMarginValue = view.findViewById(R.id.bottom_margin_value);
+            bottomMarginLandscapeSlider = view.findViewById(R.id.bottom_margin_landscape_slider);
+            bottomMarginLandscapeValue = view.findViewById(R.id.bottom_margin_landscape_value);
 
             // Initialize keyboard mode toggle groups
             keyboardModePortraitGroup = view.findViewById(R.id.keyboard_mode_portrait_group);
@@ -236,6 +246,35 @@ public class VisualAppearanceFragment extends Fragment {
                 e.printStackTrace();
                 topRowScaleSlider.setValue(1.0f);
                 topRowScaleValue.setText("100%");
+            }
+        }
+        
+        // Load bottom margin
+        if (bottomMarginSlider != null && bottomMarginValue != null) {
+            try {
+                String marginStr = prefs.getString("pref_bottom_margin_dp_portrait", "0");
+                int margin = Integer.parseInt(marginStr);
+                margin = Math.max(-200, Math.min(200, margin));
+                bottomMarginSlider.setValue(margin);
+                bottomMarginValue.setText(margin + " dp");
+            } catch (Exception e) {
+                e.printStackTrace();
+                bottomMarginSlider.setValue(0f);
+                bottomMarginValue.setText("0 dp");
+            }
+        }
+        
+        if (bottomMarginLandscapeSlider != null && bottomMarginLandscapeValue != null) {
+            try {
+                String marginStr = prefs.getString("pref_bottom_margin_dp_landscape", "0");
+                int margin = Integer.parseInt(marginStr);
+                margin = Math.max(-200, Math.min(200, margin));
+                bottomMarginLandscapeSlider.setValue(margin);
+                bottomMarginLandscapeValue.setText(margin + " dp");
+            } catch (Exception e) {
+                e.printStackTrace();
+                bottomMarginLandscapeSlider.setValue(0f);
+                bottomMarginLandscapeValue.setText("0 dp");
             }
         }
 
@@ -478,6 +517,23 @@ public class VisualAppearanceFragment extends Fragment {
                     // Store as String with one decimal place
                     prefs.edit().putString("pref_top_row_scale", String.format("%.1f", scale)).apply();
                 }
+            });
+        }
+        
+        // Bottom margin listener
+        if (bottomMarginSlider != null && bottomMarginValue != null) {
+            bottomMarginSlider.addOnChangeListener((slider, value, fromUser) -> {
+                int margin = (int) value;
+                bottomMarginValue.setText(margin + " dp");
+                if (fromUser) prefs.edit().putString("pref_bottom_margin_dp_portrait", String.valueOf(margin)).apply();
+            });
+        }
+        
+        if (bottomMarginLandscapeSlider != null && bottomMarginLandscapeValue != null) {
+            bottomMarginLandscapeSlider.addOnChangeListener((slider, value, fromUser) -> {
+                int margin = (int) value;
+                bottomMarginLandscapeValue.setText(margin + " dp");
+                if (fromUser) prefs.edit().putString("pref_bottom_margin_dp_landscape", String.valueOf(margin)).apply();
             });
         }
 

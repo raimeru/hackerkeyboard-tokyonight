@@ -666,7 +666,17 @@ public class KeyboardSwitcher implements
                  }
             }
             
-            mInputView.setPadding(0, 0, 0, navBarHeight);
+            // User margin adjustment in dp (can be negative to reduce the gap)
+            // User margin adjustment — portrait or landscape
+            float density = mInputMethodService.getResources().getDisplayMetrics().density;
+            int orientation = mInputMethodService.getResources().getConfiguration().orientation;
+            int marginDp = (orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE)
+                ? LatinIME.sKeyboardSettings.bottomMarginLandscapeDp
+                : LatinIME.sKeyboardSettings.bottomMarginPortraitDp;
+            int extraMarginPx = (int) (marginDp * density);
+            int totalBottomPadding = Math.max(0, navBarHeight + extraMarginPx);
+           
+            mInputView.setPadding(0, 0, 0, totalBottomPadding);
             mLayoutId = newLayout;
 
             // Update Navigation Bar Color to match the keyboard theme
